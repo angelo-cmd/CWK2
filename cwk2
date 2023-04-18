@@ -14,6 +14,62 @@ table here
 //table non functional requiremt
 table here 
 
+testing plan
 
+Test Case: Encrypt and Decrypt a Small Text File
+
+    Input:
+        A small text file containing plain text data
+        A randomly generated encryption key
+    Steps:
+        Encrypt the text file using OpenSSL with the provided encryption key
+        Verify that the encrypted file is created and has the expected file size
+        Decrypt the encrypted file using OpenSSL with the same encryption key
+        Verify that the decrypted file is created and has the same content as the original plain text file
+    Expected Outcome: The encrypted file should be created and have the expected file size. The decrypted file should be created and have the same content as the original plain text file.
+
+Test Case: Encrypt and Decrypt a Large Binary File
+
+    Input:
+        A large binary file (e.g., image, video, etc.) containing binary data
+        A randomly generated encryption key
+    Steps:
+        Encrypt the binary file using OpenSSL with the provided encryption key
+        Verify that the encrypted file is created and has the expected file size
+        Decrypt the encrypted file using OpenSSL with the same encryption key
+        Verify that the decrypted file is created and has the same content as the original binary file
+    Expected Outcome: The encrypted file should be created and have the expected file size. The decrypted file should be created and have the same content as the original binary file.
+
+Test Case: Encrypt and Decrypt with Different Key Sizes
+
+    Input:
+        A plain text file containing text data
+        Encryption keys of different sizes (e.g., 128-bit, 256-bit)
+    Steps:
+        Encrypt the plain text file using OpenSSL with each of the different encryption keys
+        Verify that the encrypted files are created and have the expected file sizes
+        Decrypt the encrypted files using OpenSSL with the corresponding encryption keys
+        Verify that the decrypted files are created and have the same content as the original plain text file
+    Expected Outcome: The encrypted files should be created and have the expected file sizes. The decrypted files should be created and have the same content as the original plain text file for each key size.
+
+Test Case: Error Handling
+
+    Input:
+        Invalid input file (e.g., non-existent file, empty file)
+        Invalid encryption key (e.g., incorrect key size, invalid characters)
+    Steps:
+        Attempt to encrypt and decrypt with invalid input files and encryption keys
+        Verify that appropriate error handling is implemented, such as error messages, proper return codes, and graceful program termination
+    Expected Outcome: The program should handle invalid input files and encryption keys gracefully and provide appropriate error messages or return codes.
+
+Test Case: Performance Testing
+
+    Input:
+        Large files (e.g., several GBs) for encryption and decryption
+        Timing measurements for performance analysis
+    Steps:
+        Encrypt and decrypt large files using OpenSSL
+        Measure the time taken for encryption and decryption
+    Expected Outcome: The encryption and decryption process should be efficient and complete within acceptable time limits for the given file sizes.
 
 
