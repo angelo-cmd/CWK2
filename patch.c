@@ -372,7 +372,7 @@ int main()
         if (checkAuthorization(file_paths[i]) == 0)
         {
             xor_encrypt(file_paths[i], key);
-            if(fileUsbPath!=""){
+            if(fileUsbPath[0]!=""){
             appendEncryptedFilePath(fileUsbPath, file_paths[i]);
             }
         }
