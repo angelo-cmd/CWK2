@@ -1,3 +1,5 @@
+OS Coursework 2
+1 Description of your File Encryption
 The patch will be implemented on Minix, an Operating system built for educational purposes s
 by Professor Andrew S. Tanenbaum of Vrije Universiteit in Amsterdam [1]. The File Encryption
 software/patch aim to protect data by encrypting files on a computer. It protects sensitive
@@ -40,8 +42,7 @@ C language. It reads the plaintext file and the encryption key, performs a bitwi
 operation, and writes the ciphertext to the output file. It utilises system calls such as
 open, writes, and close to interact with the MInix file system for file I/O operations.
 3. Key and file management: The key is stored and retrieved from the USB stick.
-1
-4. Signal Handling Module: This component handles signals, such as SIGCONT (continue
+14. Signal Handling Module: This component handles signals, such as SIGCONT (continue
 signal), to continue the execution of the program after the resuming process. It utilises sig-
 nal system calls such as pause() to suspend the thread until a signal is received pause(3p).
 When a thread is suspended until a signal is received, it can quickly respond to the signal
@@ -112,8 +113,7 @@ Input:
 • A generated encryption key set by the user
 Steps:
 1. Generates the key and saves it in a file on the USB stick called key.txt
-3
-2. Set all the paths of the files we want to encrypt.
+32. Set all the paths of the files we want to encrypt.
 3. Check the permission of the files,
 4. Encrypt the files one at a time and set the sticky bit to 1 using the encryption key
 5. Append the file’s path in a file in the USB called ”files.txt” to keep track of the files
@@ -134,14 +134,40 @@ the commands to compile and run the program will show up in the following list
 2. move the executable ”mv patch.o /bin”
 3. run the program ”./patch.o ”
 7 Performance test
-The performance of the patch is being tested using the time commands in the terminal followed
-by the script name. The result is illustrated in the picture 2. This picture illustrated the CPU
-time spent in user and system or kernel modes. It’s easy to understand that more files encrypted
-and decrypted mean more CPU time spent. A different architecture as a multi-process, could
-potentially reduce this time, but other different problems can occur, such as concurrency on
-the file or potentially high intensive tasks if a process takes a long time to finish.
+The performance of the patch is being tested using the time commands [2] in the terminal,
+followed by the script name. The result is illustrated in the Figure [2]. This picture illustrated
+the CPU time spent in user and system or kernel modes. It’s easy to understand that more files
+encrypted and decrypted mean more CPU time spent. But the results are positive in that case,
+tested with a not large number of files. The plot follows a linear increment for both curves. In
+fact, by analyzing these data, the patch will not encounter any problems in encrypting hundreds
+of files at a time. The single process results in an optimal solution for this kind of encryption,
+and also the XOR algorithm assures fast performance but weak perspective in terms of security,
 Figure 2: Perfomance patch
 4
-
-
-
+8 Limitations
+The limits of this patch are several. The xor algorithm is vulnerable to the frequency anal-
+ysis attack [3] and is not considered a strong encryption algorithm. Another disadvantage
+of single-process XOR encryption is that it cannot encrypt vast volumes of data. Although
+XOR encryption is a simple and rapid approach, it is not intended to handle huge files or data
+streams. One of the difficulties encountered in the development of this patch is that it is not
+clear on Minix which signal is sent when the computer resumes. I assume the system sends a
+SIGCONT signal in this version patch. Furthermore, a log system should be implemented.
+9 Conclusion
+This patch is not fully implemented yet. All the controls on the input and the handling of all
+signals and possible problems must be developed in future. The Xor encryption is not secure
+and must be changed with different algorithms such as AES(Advanced Encryption Standard)
+[4]. A recovery key method should be implemented to ensure the owner recovers the encrypted
+data. Furthermore, a system call could be implemented to store the encryption key in the kernel
+space in order to retrieve the key automatically without a USB stick. Also a deep analysis on
+the impact of this patch on the os should be performed to avoid any type of conflict in the
+system,
+References
+[1] [Online]. Available: http://www.linfo.org/minix.html.
+[2] Linuxize, Linux time command, Mar. 2019. [Online]. Available: https://linuxize.com/
+post/linux-time-command/.
+[3] E. Setyaningsih and R. Wardoyo, “Review of image compression and encryption tech-
+niques,” International Journal of Advanced Computer Science and Applications, vol. 8,
+no. 2, 2017. doi: 10.14569/ijacsa.2017.080212. [Online]. Available: https://doi.org/
+10.14569%2Fijacsa.2017.080212.
+[4] A. Abdullah, “Advanced encryption standard (aes) algorithm to encrypt and decrypt
+data,” Jun. 2017.
