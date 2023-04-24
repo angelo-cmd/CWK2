@@ -1,173 +1,103 @@
 OS Coursework 2
-1 Description of your File Encryption
-The patch will be implemented on Minix, an Operating system built for educational purposes s
-by Professor Andrew S. Tanenbaum of Vrije Universiteit in Amsterdam [1]. The File Encryption
-software/patch aim to protect data by encrypting files on a computer. It protects sensitive
-information from unauthorised access or data breaches by employing numerous approaches,
-such as encryption and file permissions, to guarantee that unauthorised people cannot access
-the encrypted files. The File Encryption software/patch encrypts the files using a xor algorithm
-that only alters the data to decrypt it with the right decryption key. This guarantees that the
-data remains unreadable and protected even if unauthorised persons get access to the encrypted
-files. The patch will run as a single process. The patch will produce a file on a USB stick holding
-the encryption key and another listing all previously encrypted file locations. The sticky bit
-will be set to 1 to identify an encrypted file; only the file owners will have read and write rights.
-When the computer is suspended, the patch protects the files and restores all data when the
-machine is restarted. The file will not be decrypted if the USB is not inserted into the computer
-during the decryption. Furthermore, depending on the user’s choices during configuration, the
-programme can encrypt and decrypt data without waiting for the computer to restart.
-2 Requiremets
-Requirement Description
-FR1: File Encryption Encrypt files using a cryptographic algorithm.
-FR2: File Decryption Decrypt encrypted files using the correct decryption key.
-FR3: File Access Control Implement access controls to ensure only authorised users can encrypt, decrypt or access encrypted files.
-FR4: Key Management Generate, store, and securely manage encryption and decryption keys.
-FR5: User Authentication Require user authentication (e.g., password or biometric authentication) for file encryption, decryption, and accessheight
-Non-Functional Requirement Description
-NFR1 Security The encryption algorithm used should be resistant to known attacks and vulnerabilities. The software should use strong encryption keys and ensure they are not compromised.
-NFR2 Performance The encryption and decryption processes should be efficient and optimised for fast processing times, with minimal impact on system resources.
-NFR4 reliability the encryption software should be reliable and able to handle large amounts of data without errors or crashes.
-NFR5 Maintainability With clear documentation and coding practises, the product should be simple to maintain and adapt as needed. It should also handle operating system and other software component upgrades and fixes..
-NFR6 Scalability The encryption software should be scalable and able to handle increasing amounts of data and users. It should be designed to support growth and expansion as needed.
-NFR7 Usability The software should be user-friendly and easy to use, with clear instructions and minimal training required.
-NFR8 Compliance The software should comply with relevant legal and regulatory requirements, such as data privacy laws.
-3 Design Overview
-This section describes the design of a software/patch that implements XOR encryption in Minix,
-using system calls such as open, write, close, and signal. The XOR encryption software/patch
-for Minix consists of the following components:
-1. User Interface: This component provides an interface for users to input plaintext files and
-encryption keys and to specify output file paths. The patch can only be run from the
-terminal.
-2. XOR Encryption Module: This component implements the XOR encryption logic using
-C language. It reads the plaintext file and the encryption key, performs a bitwise XOR
-operation, and writes the ciphertext to the output file. It utilises system calls such as
-open, writes, and close to interact with the MInix file system for file I/O operations.
-3. Key and file management: The key is stored and retrieved from the USB stick.
-14. Signal Handling Module: This component handles signals, such as SIGCONT (continue
-signal), to continue the execution of the program after the resuming process. It utilises sig-
-nal system calls such as pause() to suspend the thread until a signal is received pause(3p).
-When a thread is suspended until a signal is received, it can quickly respond to the signal
-as soon as it is received without wasting CPU cycles on continuous polling or busy-waiting
-5. Process and thread: The design will be a single process and thread
-3.1 Usage
+Version control : https://github.com/angelo-cmd/CWK2/blob/main/cwk2
+1	Description of your File Encryption
+The patch will be implemented on Minix, an Operating system built for educational purposes s by Professor Andrew S. Tanenbaum of Vrije Universiteit in Amsterdam [1]. The File Encryption software/patch aim to protect data by encrypting files on a computer. It protects sensitive information from unauthorised access or data breaches by employing numerous approaches, such as encryption and file permissions, to guarantee that unauthorised people cannot access the encrypted files. The File Encryption software/patch encrypts the files using a xor algorithm that only alters the data to decrypt it with the right decryption key. This guarantees that the data remains unreadable and protected even if unauthorised persons get access to the encrypted files. The patch will run as a single process. The patch will produce a file on a USB stick holding the encryption key and another listing all previously encrypted file locations. The sticky bit will be set to 1 to identify an encrypted file; only the file owners will have read and write rights. When the computer is suspended, the patch protects the files and restores all data when the machine is restarted. The file will not be decrypted if the USB is not inserted into the computer during the decryption. Furthermore, depending on the user’s choices during configuration, the programme can encrypt and decrypt data without waiting for the computer to restart.
+2	Requirements
+Requirement	Description
+FR1: File Encryption	Encrypt files using a cryptographic algorithm.
+FR2: File Decryption	Decrypt encrypted files using the correct decryption key.
+FR3: File Access Control	Implement access controls to ensure only authorised users can encrypt, decrypt or access encrypted files.
+FR4: Key Management	Generate, store, and securely manage encryption and decryption keys.
+FR5: User Authentication	Require user authentication for file encryption, decryption, and access
+1 Functional Requirement
+Non-Functional Requirement	Description
+NFR1 Security	The encryption algorithm used should be resistant to known attacks and vulnerabilities. The software should use strong encryption keys and ensure they are not compromised.
+NFR2 Performance	The encryption and decryption processes should be efficient and optimised for fast processing times, with minimal impact on system resources.
+NFR4 Reliability	the encryption software should be reliable and able to handle large amounts of data without errors or crashes.
+NFR5 Maintainability	With clear documentation and coding practises, the product should be simple to maintain and adapt as needed. It should also handle operating system and other software component upgrades and fixes.
+NFR6 Scalability	The encryption software should be scalable and able to handle increasing amounts of data and users. It should be designed to support growth and expansion as needed.
+	
+NFR7 Usability	The software should be user-friendly and easy to use, with clear instructions and minimal training required.
+NFR8 Compliance	The software should comply with relevant legal and regulatory requirements, such as data privacy laws.
+2 Non-Functional Requirement
+3	Design Overview
+This section describes the design of a software/patch that implements XOR encryption in Minix, using system calls such as open, write, close, and signal. The XOR encryption software/patch for Minix consists of the following components:
+1.	User Interface: This component provides an interface for users to input plaintext files and encryption keys and to specify output file paths. The patch can only be run from the terminal.
+2.	XOR Encryption Module: This component implements the XOR encryption logic using C language. It reads the plaintext file and the encryption key, performs a bitwise XOR operation, and writes the ciphertext to the output file. It utilises system calls such as open, writes, and close to interact with the Minix file system for file I/O operations.
+3.	Key and file management: The key is stored and retrieved from the USB stick.
+4.	Signal Handling Module: This component handles signals, such as SIGCONT (continue signal), to continue the execution of the program after the resuming process. It utilises signal system calls such as pause() to suspend the thread until a signal is received [2]. When a thread is suspended until a signal is received, it can quickly respond to the signal as soon as it is received without wasting CPU cycles on continuous polling or busy-waiting.
+5.	Process and thread: The design will be a single process and thread.
+3.1	Usage
 The XOR encryption software/patch can be used as follows:
-1. The user inserts the path of the USB stick
-2. User sets the encryption key if it’s not detected
-3. User provides the number of files he wants to encrypt. 0 means that the users want only
-to decrypt the files
-4. Initiates the encryption process.
-5. The XOR encryption module reads the plaintext file, performs XOR encryption with the
-encryption key and writes the ciphertext to the output file using system calls such as
-open, write, and close.
-6. The signal handling module monitors for signals, such as SIGINT, and gracefully termi-
-nates the encryption process when a signal is received using system calls.
-7. The error handling and logging component captures and handles errors that may occur
-during the encryption process, using system calls such as perror and syslog, and provides
-appropriate feedback to the user through the user interface.
-8. Once the encryption process is complete, the user can access the encrypted file at the
-specified output file path.
-3.2 Communications with the OS
-This section will explain how the patch communicates with the Os. The patch is resident in the
-user space but needs to communicate with the OS and the other system sublayer, as illustrated
-in the image [1]. The patch communicates with the Os using the system calls. The following
-list is a brief explanation of how communications work.
-1. The user program initiates a system call by calling a library function, which maps the
-system call to a specific function and passes the parameters to the kernel.
-2. The kernel receives the system call request and checks the request’s validity. Additionally,
-if the request is valid, the kernel locates the appropriate system call handler and passes
-the request to it
-3. The system call handler runs the request and interacts with all the hardware required.
-When the operation is finished, it will return the result of the operation.
-4. The user program receives the result or an error number.
-4 Implementation of your File Encryption including an-
-notated C code
-This is my link: LaTeX-Tutorial.
-2
-Figure 1: Minix Architecture
-5 Testing Plan
-5.1 Test Case 1: Encrypt and Decrypt a Small Text File
+1.	The user inserts the path of the USB stick.
+2.	User sets the encryption key if it’s not detected.
+3.	User provides the number of files he wants to encrypt. 0 means that the users want only to decrypt the files.
+4.	Initiates the encryption process.
+5.	The XOR encryption module reads the plaintext file, performs XOR encryption with the encryption key and writes the ciphertext to the output file using system calls such as open, write, and close.
+6.	The signal handling module monitors for signals, such as SIGINT, and gracefully terminates the encryption process when a signal is received using system calls.
+7.	The error handling and logging component captures and handles errors that may occur during the encryption process.
+8.	Once the encryption process is complete, the user can access the encrypted file at the specified output file path.
+3.2	Communications with the OS
+This section will explain how the patch communicates with the Os. The patch is resident in the user space but needs to communicate with the OS and the other system sublayer, as illustrated in the image [3]. The patch communicates with the Os using the system calls. The following list is a brief explanation of how communications work.
+1.	The user program initiates a system call by calling a library function, which maps the system call to a specific function and passes the parameters to the kernel.
+2.	The kernel receives the system call request and checks the request’s validity. Additionally, if the request is valid, the kernel locates the appropriate system call handler and passes the request to it.
+3.	The system call handler runs the request and interacts with all the hardware required. When the operation is finished, it will return the result of the operation.
+4.	The user program receives the result or an error number.
+ 
+3 Minix Architecture
+4	Implementation of your File Encryption including annotated C code
+https://github.com/angelo-cmd/CWK2/blob/main/patch.c
+5	Testing Plan
+5.1	Test Case 1: Encrypt and Decrypt a Small Text File
 Input:
-• A small text file containing plain text data
-• A generated encryption key set by the user
+•	A small text file containing plain text data.
+•	A generated encryption key set by the user
 Steps:
-1. Encrypt the text file using XOR with the provided encryption key
-2. Verify that the encrypted file is created and saved in the file on the USB stick
-3. Decrypt the encrypted file using XOR with the same encryption key
-4. Verify that the decrypted file has the same content as the original plain text file
+1.	Encrypt the text file using XOR with the provided encryption key.
+2.	Verify that the encrypted file is created and saved in the file on the USB stick.
+3.	Decrypt the encrypted file using XOR with the same encryption key.
+4.	Verify that the decrypted file has the same content as the original plain text file.
 Expected Outcome: The encrypted file should be the same file with all the chars encrypted.
-5.2 Test Case 2: Encrypt and Decrypt a Large Binary File
+5.2	Test Case 2: Encrypt and Decrypt a Large Binary File
 Input:
-• A sizeable binary file (e.g., image, video, etc.) containing binary data
-• A generated encryption key set by the user
+•	A sizeable binary file (e.g., image, video, etc.) containing binary data.
+•	A generated encryption key set by the user
 Steps:
-1. Encrypt the binary file using XOR with the provided encryption key
-2. Verify that the encrypted file is created and saved in the file on the USB stick
-3. Decrypt the encrypted file using XOR with the same encryption key, retrieving all the file
-paths from the USB stick.
-4. Verify that the decrypted file is created and has the same content as the original binary
-file
-5.3 Test Case 3: Encrypt and Decrypt only if the USB is plugged and
-a SIGCONT signal is received
+1.	Encrypt the binary file using XOR with the provided encryption key.
+2.	Verify that the encrypted file is created and saved in the file on the USB stick.
+3.	Decrypt the encrypted file using XOR with the same encryption key, retrieving all the file paths from the USB stick.
+4.	Verify that the decrypted file is created and has the same content as the original binary file.
+5.3	Test Case 3: Encrypt and Decrypt only if the USB is plugged and a SIGCONT signal is received.
 Input:
-• USB stick path
-• multiple files with a different extension
-• A generated encryption key set by the user
+•	USB stick path
+•	multiple files with a different extension
+•	A generated encryption key set by the user
 Steps:
-1. Generates the key and saves it in a file on the USB stick called key.txt
-32. Set all the paths of the files we want to encrypt.
-3. Check the permission of the files,
-4. Encrypt the files one at a time and set the sticky bit to 1 using the encryption key
-5. Append the file’s path in a file in the USB called ”files.txt” to keep track of the files
-encrypted
-6. Waiting for SIGCONT signal
-7. When the signal is received, decrypt the encrypted file using XOR with the same encryp-
-tion key, retrieving all the file paths from the USB stick.
-8. Set the sticky bit to 0 to let the programs understand that the files are not encrypted.
-9. Verify that the decrypted file is created and has the same content as the original binary
-file
-6 Description of integrating/adding the implemented com-
-ponent/patch to OS
-The component will not modify the OS but will implement the functionality using the existing
-system call. The patch is a simple program situated in the /bin folder. The program is situated
-here in order to allow the user to run the script from each location in the entire file system. All
-the commands to compile and run the program will show up in the following list
-1. compile the program ” gcc -o patch.o patch.c ”
-2. move the executable ”mv patch.o /bin”
-3. run the program ”./patch.o ”
-7 Performance test
-The performance of the patch is being tested using the time commands [2] in the terminal,
-followed by the script name. The result is illustrated in the Figure [2]. This picture illustrated
-the CPU time spent in user and system or kernel modes. It’s easy to understand that more files
-encrypted and decrypted mean more CPU time spent. But the results are positive in that case,
-tested with a not large number of files. The plot follows a linear increment for both curves. In
-fact, by analyzing these data, the patch will not encounter any problems in encrypting hundreds
-of files at a time. The single process results in an optimal solution for this kind of encryption,
-and also the XOR algorithm assures fast performance but weak perspective in terms of security,
-Figure 2: Perfomance patch
-4
-8 Limitations
-The limits of this patch are several. The xor algorithm is vulnerable to the frequency anal-
-ysis attack [3] and is not considered a strong encryption algorithm. Another disadvantage
-of single-process XOR encryption is that it cannot encrypt vast volumes of data. Although
-XOR encryption is a simple and rapid approach, it is not intended to handle huge files or data
-streams. One of the difficulties encountered in the development of this patch is that it is not
-clear on Minix which signal is sent when the computer resumes. I assume the system sends a
-SIGCONT signal in this version patch. Furthermore, a log system should be implemented.
-9 Conclusion
-This patch is not fully implemented yet. All the controls on the input and the handling of all
-signals and possible problems must be developed in future. The Xor encryption is not secure
-and must be changed with different algorithms such as AES(Advanced Encryption Standard)
-[4]. A recovery key method should be implemented to ensure the owner recovers the encrypted
-data. Furthermore, a system call could be implemented to store the encryption key in the kernel
-space in order to retrieve the key automatically without a USB stick. Also a deep analysis on
-the impact of this patch on the os should be performed to avoid any type of conflict in the
-system,
+1.	Generates the key and saves it in a file on the USB stick called key.txt.
+2.	Set all the paths of the files we want to encrypt.
+3.	Check the permission of the files,
+4.	Encrypt the files one at a time and set the sticky bit to 1 using the encryption key.
+5.	Append the file’s path in a file in the USB called” files.txt” to keep track of the files encrypted.
+6.	Waiting for SIGCONT signal
+7.	When the signal is received, decrypt the encrypted file using XOR with the same encryption key, retrieving all the file paths from the USB stick.
+8.	Set the sticky bit to 0 to let the programs understand that the files are not encrypted.
+9.	Verify that the decrypted file is created and has the same content as the original binary file.
+6	Description of integrating/adding the implemented component/patch to OS
+The component will not modify the OS but will implement the functionality using the existing system call. The patch is a simple program situated in the /bin folder. The program is situated here to allow the user to run the script from each location in the entire file system. All the commands to compile and run the program will show up in the following list.
+1.	compile the program” gcc -o patch.o patch.c ”
+2.	move the executable” mv patch.o /bin”
+3.	run the program.” /patch.o ”
+7	Performance test
+The performance of the patch is being tested using the time commands [3] in the terminal, followed by the script name. The test result is illustrated in the Figure [2]. This picture illustrated the CPU time spent in user and system or kernel modes. It’s easy to understand that more files encrypted and decrypted mean more CPU time spent. But the results are positive in that case, tested with a not considerable number of files. The plot follows a linear increment for both curves. In fact, by analysing these data, the patch will not encounter any problems in encrypting hundreds of files at a time. The single process results in an optimal solution for this kind of encryption, and the XOR algorithm assures fast performance but weak perspective in terms of security,
+ 
+Figure 2: Performance patch
+8	Limitations
+The limits of this patch are several. The xor algorithm is vulnerable to the frequency analysis attack [4] and is not considered a strong encryption algorithm. Another disadvantage of single-process XOR encryption is that it cannot encrypt vast volumes of data. Although XOR encryption is a simple and rapid approach, it is not intended to manage huge files or data streams. One of the difficulties encountered in the development of the patch is that it is not clear on Minix which signal is sent when the computer resumes. I assume the system sends a SIGCONT signal in this version patch. 
+9	Conclusion
+This patch is not fully implemented yet. All the controls on the input and the handling of all signals and potential problems must be developed in future. The Xor encryption is not secure and must be changed with different algorithms such as AES (Advanced Encryption Standard) [5]. A recovery key method should be implemented to ensure the owner recovers the encrypted data. Furthermore, a system call could be implemented to store the encryption key in the kernel space to retrieve the key automatically without a USB stick. Also, a deep analysis on the impact of this patch on the OS should be performed to avoid any type of conflict in the system,
 References
-[1] [Online]. Available: http://www.linfo.org/minix.html.
-[2] Linuxize, Linux time command, Mar. 2019. [Online]. Available: https://linuxize.com/
-post/linux-time-command/.
-[3] E. Setyaningsih and R. Wardoyo, “Review of image compression and encryption tech-
-niques,” International Journal of Advanced Computer Science and Applications, vol. 8,
-no. 2, 2017. doi: 10.14569/ijacsa.2017.080212. [Online]. Available: https://doi.org/
-10.14569%2Fijacsa.2017.080212.
-[4] A. Abdullah, “Advanced encryption standard (aes) algorithm to encrypt and decrypt
-data,” Jun. 2017.
+[1]	[Online]. Available: http://www.linfo.org/minix.html.
+[2]	[Online]. Available: https://man7.org/linux/man-pages/man3/pause.3p.html.
+[3]	Linuxize, Linux time command, Mar. 2019. [Online]. Available: https://linuxize.com/ post/linux-time-command/.
+[4]	E. Setyaningsih and R. Wardoyo, “Review of image compression and encryption techniques,” International Journal of Advanced Computer Science and Applications, vol. 8, no. 2, 2017. doi: 10.14569/ijacsa.2017.080212. [Online]. Available: https://doi.org/ 10.14569%2Fijacsa.2017.080212.
+[5]	A. Abdullah, “Advanced encryption standard (aes) algorithm to encrypt and decrypt data,” Jun. 2017.
