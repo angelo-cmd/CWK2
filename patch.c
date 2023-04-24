@@ -12,13 +12,16 @@
 #include <sys/stat.h>  // stat() and chmod() system calls
 #include <sys/types.h> // stat() and chmod() system calls
 #include <time.h>
+#include <pthread.h>
 #define MAX_FILES 100
 #define MAX_PATH_LENGTH 256
-char USBPATH[256]="";     // usb path
-char keyusbpath[256]=""; // key file usb path
-char fileUsbPath[256]=""; // file with list of all file encrypted in usb
+char USBPATH[256] = "";     // usb path
+char keyusbpath[256] = "";  // key file usb path
+char fileUsbPath[256] = ""; // file with list of all file encrypted in usb
 char file_paths[MAX_FILES][MAX_PATH_LENGTH];
 char *key;
+int num_files = 0;
+int i = 0;
 
 typedef enum
 {
@@ -29,7 +32,8 @@ typedef enum
 // based on the line number
 
 char *getLineAtIndex(const char *filename, int index)
-{ index--;
+{
+    index--;
     FILE *file = fopen(filename, "r");
     if (file == NULL)
     {
@@ -283,73 +287,100 @@ int deleteLastLine(const char *filename)
 
     return 0;
 }
+
+
+void *myThreadEnc(void *vargp)
+{
+    puts("Tread start");
+   
+    if (checkAuthorization(file_paths[i]) == 0)
+    {
+        appendEncryptedFilePath(fileUsbPath, file_paths[i]);
+
+        xor_encrypt(file_paths[i], key);
+        
+        
+    }
+    puts("Tread finish");
+     sleep(4);
+}
+void *myThreadDec(void *vargp)
+{
+    puts("Tread start");
+    
+
+           char* files = getLineAtIndex(fileUsbPath, i);
+            xor_decrypt(files, key);
+            deleteLastLine(fileUsbPath);
+    puts("Tread finish");
+    sleep(4);
+}
 void sigHandler(int sig)
 {
     if (sig == SIGCONT)
     {
         printf("Received SIGCONT signal\n");
 
-        char *key = getFirstLineOfFile(keyusbpath);
+        key = getFirstLineOfFile(keyusbpath);
         int lines = countLines(fileUsbPath);
-        char *files;
-        for (size_t i = lines; i > 0; i--)
+ 
+        for (i = lines; i > 0; i--)
         {
-            files = getLineAtIndex(fileUsbPath, i);
-            xor_decrypt(files, key);
-            deleteLastLine(fileUsbPath);
+            pthread_t tid;
+
+          
+                pthread_create(&tid, NULL, myThreadDec, (void *)&tid);
+            
+           
+            sleep(2);
         }
     }
-    if(sig==SIGKILL){
+    if (sig == SIGKILL)
+    {
         printf("Received SIGKILL signal terminating \n");
         exit(EXIT_FAILURE);
     }
 }
 int main()
 {
-  
 
-   
-
-   
     puts("welcome to your encryption and decryption program");
     puts("you need to plug you usb stick in order to configure your key and files in 10 seconds");
-    sleep(10);
-
 
     puts("insert the path of your usb ending with /");
-    scanf("%255s", USBPATH);
-    if((strncmp(USBPATH, "/dev", 4) != 0)){ //minix all disk are in the /dev folder
-        puts("the path it's not a usb");
-        return EXIT_FAILURE;
-    }
+    scanf("%240s", USBPATH);
+    /*  if((strncmp(USBPATH, "/dev", 4) != 0)){ //minix all disk are in the /dev folder
+         puts("the path it's not a usb");
+         return EXIT_FAILURE;
+     } */
 
-    DIR *dir=opendir(USBPATH); // Open file in read mode
-    
+    DIR *dir = opendir(USBPATH); // Open file in read mode
+
     if (dir == NULL)
     {
-       perror("error open the device");
-       return EXIT_FAILURE;
-
-    } 
+        perror("error open the device");
+        return EXIT_FAILURE;
+    }
     closedir(dir);
-    
 
     strcpy(keyusbpath, USBPATH);      // set key files usb path
     strcat(keyusbpath, "key.txt");    // create the file path
     strcpy(fileUsbPath, USBPATH);     // set key files usb path
     strcat(fileUsbPath, "files.txt"); // create the file path
-    key = Checkusb(keyusbpath); // retrieve or set key from usb
-    
+    key = Checkusb(keyusbpath);       // retrieve or set key from usb
 
     // ask for the files;
-    int num_files = 0;
+    num_files = 0;
     puts("\nEnter how many files you want to encrypt, press 0 if you want only to decrypt the files");
     int maxfiles = 0;
     scanf(" %d", &maxfiles);
     // Read file paths from stdin until the maximum number of files or end-of-file (EOF) is reached
-    if(num_files!=0){
-    printf("Enter file paths (maximum %d files, one per line, end with Ctrl+D):\n", MAX_FILES);
+    if (maxfiles == 0)
+    {
+        puts("no file to encrypt ");
+        return EXIT_SUCCESS;
     }
+    printf("Enter file paths (maximum %d files, one per line, end with Ctrl+D):\n", MAX_FILES);
 
     while (num_files < maxfiles && fgets(file_paths[num_files], MAX_PATH_LENGTH, stdin))
     {
@@ -366,49 +397,32 @@ int main()
     // register the signal
     // Display the file paths entered by the user
     printf("You entered %d file paths:\n", num_files);
-    for (int i = 0; i < num_files; i++)
-    {
+   
+        pthread_t tid;
 
-        if (checkAuthorization(file_paths[i]) == 0)
-        {
-            xor_encrypt(file_paths[i], key);
-            if(fileUsbPath[0]!=""){
-            appendEncryptedFilePath(fileUsbPath, file_paths[i]);
+            for ( i; i < num_files;i++)
+            {
+                pthread_create(&tid, NULL, myThreadEnc, (void *)&tid);
+              
+                sleep(2);
             }
-        }
-    }
-    char input;
-    printf("If you want to decrypt all files now press Y or wait the resuiming signal press n ");
-    scanf(" %c", &input);
-
-    if (input == 'y' || input == 'Y')
-    {
-        printf("Decrypting all files...\n");
-        char *key = getFirstLineOfFile(keyusbpath);
-        int lines = countLines(fileUsbPath);
-        char *files;
-        for (size_t i = lines; i > 0; i--)
-        {
-            files = getLineAtIndex(fileUsbPath, i);
-            xor_decrypt(files, key);
-            deleteLastLine(fileUsbPath);
-        }
-    }
-    else
-    {
-        printf("Files will not be decrypted the program will wait the signal\n");
-
-        signal(SIGCONT, sigHandler); // signal when the pc resume
-
-        pause(); // we pause the  program waiting for a SIGCONT signal that is send by the os during the resuming operations
+    
+    
 
     
-    }
+    
+    puts("Waiting the Sicgont signal");
+    
+    puts("Files will not be decrypted the program will wait the signal\n");
+
+    signal(SIGCONT, sigHandler); // signal when the pc resume
+
+    pause(); // we pause the  program waiting for a SIGCONT signal that is send by the os during the resuming operations
+
     puts("terminating...");
     exit(EXIT_SUCCESS);
 }
 // Ask the user if they want to decrypt all files
-
 
 // Function to check authorization using chmod
 int checkAuthorization(char *filePath)
