@@ -304,21 +304,21 @@ void *myThreadEnc(void *vargp)
     puts("Tread finish");
     sem_post(&mutex);
 }
-void *myThreadDec(void *vargp)  // Thread for Decryption
+void *myThreadDec(void *vargp) // Thread for Decryption
 {
     sem_wait(&mutex);
 
     puts("Tread start");
 
     char *files = getLineAtIndex(fileUsbPath, i);
-    xor_decrypt(files,key);
+    xor_decrypt(files, key);
     deleteLastLine(fileUsbPath);
-     sleep(2); 
+    sleep(2);
     puts("Tread finish");
-   
+
     sem_post(&mutex);
 }
-void sigHandler(int sig) //signal handler 
+void sigHandler(int sig) // signal handler
 {
     if (sig == SIGCONT) // resuming command
     {
@@ -353,10 +353,11 @@ int main()
 
     puts("insert the path of your usb ending with /");
     scanf("%240s", USBPATH);
-    /*   if((strncmp(USBPATH, "/dev", 4) != 0)){ //minix all disk are in the /dev folder
-          puts("the path it's not a usb");
-          return EXIT_FAILURE;
-      }  */
+    if ((strncmp(USBPATH, "/dev", 4) != 0))
+    { // minix all disk are in the /dev folder
+        puts("the path it's not a usb");
+        return EXIT_FAILURE;
+    }
     DIR *dir = opendir(USBPATH); // Open file in read mode
     if (dir == NULL)
     {
